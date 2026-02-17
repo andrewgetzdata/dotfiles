@@ -107,6 +107,16 @@ ln -sf "$DOTFILES_DIR/skills/granola-sync" "$HOME/.claude/skills/granola-sync"
 info "~/.claude/skills/granola-sync -> dotfiles/skills/granola-sync"
 ln -sf "$DOTFILES_DIR/skills/granola-latest" "$HOME/.claude/skills/granola-latest"
 info "~/.claude/skills/granola-latest -> dotfiles/skills/granola-latest"
+ln -sf "$DOTFILES_DIR/skills/edit-copy" "$HOME/.claude/skills/edit-copy"
+info "~/.claude/skills/edit-copy -> dotfiles/skills/edit-copy"
+ln -sf "$DOTFILES_DIR/skills/new-blog-post" "$HOME/.claude/skills/new-blog-post"
+info "~/.claude/skills/new-blog-post -> dotfiles/skills/new-blog-post"
+ln -sf "$DOTFILES_DIR/skills/new-project" "$HOME/.claude/skills/new-project"
+info "~/.claude/skills/new-project -> dotfiles/skills/new-project"
+ln -sf "$DOTFILES_DIR/skills/plan-tickets" "$HOME/.claude/skills/plan-tickets"
+info "~/.claude/skills/plan-tickets -> dotfiles/skills/plan-tickets"
+ln -sf "$DOTFILES_DIR/skills/execute-tickets" "$HOME/.claude/skills/execute-tickets"
+info "~/.claude/skills/execute-tickets -> dotfiles/skills/execute-tickets"
 echo ""
 
 # 8. Validate
@@ -127,7 +137,9 @@ done
 
 for link in "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.claude/CLAUDE.md" \
             "$HOME/.claude/settings.json" "$HOME/.claude/skills/granola-sync" \
-            "$HOME/.claude/skills/granola-latest"; do
+            "$HOME/.claude/skills/granola-latest" "$HOME/.claude/skills/edit-copy" \
+            "$HOME/.claude/skills/new-blog-post" "$HOME/.claude/skills/new-project" \
+            "$HOME/.claude/skills/plan-tickets" "$HOME/.claude/skills/execute-tickets"; do
     if [ -L "$link" ]; then
         info "symlink $(basename $link) ok"
     else
