@@ -33,6 +33,14 @@ The install script will:
 3. Symlink tmux, nvim, and Claude Code configs
 4. Prompt you to set up API keys in `config/.dotfiles_env`
 
+## MCP Servers
+
+Granola MCP is configured in `claude/settings.json` and symlinked to `~/.claude/settings.json` by the installer.
+
+- **Auth**: browser-based OAuth — no API key needed in `.dotfiles_env`
+- **New machine setup**: run `bash .install.sh`, then authenticate Granola on first use in Claude Code
+- The Claude.ai cloud plugin also provides Granola (account-managed); the local config is a fallback for machines with a different Claude account
+
 ## Secrets
 
 Copy the example and fill in your keys:

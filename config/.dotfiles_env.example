@@ -3,3 +3,6 @@
 export ANTHROPIC_API_KEY=""
 export PERSONAL_GITHUB_TOKEN=""
 export FIRECRAWL_API_KEY=""
+
+# Granola MCP uses browser OAuth — no API key needed here.
+# Authenticate on first use in Claude Code.
