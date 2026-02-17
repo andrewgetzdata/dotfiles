@@ -1,0 +1,5 @@
+# Copy this to config/.dotfiles_env and fill in your values
+# .dotfiles_env is gitignored and never committed
+export ANTHROPIC_API_KEY=""
+export PERSONAL_GITHUB_TOKEN=""
+export FIRECRAWL_API_KEY=""

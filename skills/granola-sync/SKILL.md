@@ -1,3 +1,9 @@
+---
+name: granola-sync
+description: This skill should be used when the user asks to "sync meetings", "sync granola", "pull meetings from granola", or wants to sync the last 7 days of Granola meetings into markdown files.
+version: 1.0.0
+---
+
 # Granola sync (last 7 days)
 
 Sync Granola meetings from the last 7 days (including today) into root-level markdown files using the Meeting Template. Create new files or update existing ones matched by meetingID.
@@ -76,7 +82,7 @@ createdDate: YYYY-MM-DD
 organization:
   - "[[Fountain]]"
 location: "Virtual"
-people: []   # e.g. ["[[Steve Johnson]]"], never <Insert your full name here>
+people: []   # e.g. ["[[Steve Johnson]]"], never Andrew Getz
 topics: []
 ---
 

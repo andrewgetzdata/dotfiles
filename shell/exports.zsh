@@ -5,7 +5,7 @@
 # Sourced from .zshrc after Oh My Zsh initialization
 
 # Development environment variables
-export EDITOR="code"
+export EDITOR="nvim"
 export VISUAL="$EDITOR"
 
 # Development tools

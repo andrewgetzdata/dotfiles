@@ -43,14 +43,6 @@ alias reload="source ~/.zshrc && echo 'Shell reloaded!'"
 alias zshconfig="$EDITOR ~/.zshrc"
 alias dotfiles="cd $HOME/dotfiles"
 
-# 1Password aliases (if available)
-if command -v op &> /dev/null; then
-    alias op-signin="eval \$(op signin)"
-    alias op-whoami="op whoami"
-    alias op-env="op-setup-env"
-    alias op-ssh="op-inject-ssh"
-fi
-
 # Claude Code aliases (if available)
 if command -v claude &> /dev/null; then
     alias ai="claude"
@@ -74,5 +66,4 @@ fi
 
 # Productivity aliases
 alias myip="curl -s ifconfig.me"
-alias qr="qrencode -t utf8"
 alias backup-dotfiles="tar -czf ~/dotfiles-backup-$(date +%Y%m%d).tar.gz ~/dotfiles"
