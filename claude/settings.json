@@ -1,0 +1,12 @@
+{
+  "teammateMode": "tmux",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "mcpServers": {
+    "granola": {
+      "type": "url",
+      "url": "https://mcp.granola.ai/mcp"
+    }
+  }
+}

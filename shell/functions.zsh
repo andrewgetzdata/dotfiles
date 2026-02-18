@@ -1,113 +1,8 @@
 #!/bin/zsh
 
 # Shell Environment Functions
-# This file contains utility functions and 1Password helpers
+# This file contains utility functions
 # Sourced from .zshrc after Oh My Zsh initialization
-
-# 1Password helper functions
-if command -v op &> /dev/null; then
-
-    # Retrieve environment variable from 1Password
-    op-get-env() {
-        if [ $# -eq 0 ]; then
-            echo "Usage: op-get-env <vault-item> <field>"
-            echo "Example: op-get-env 'GitHub' 'api-token'"
-            return 1
-        fi
-
-        local item="$1"
-        local field="$2"
-
-        if [ -z "$field" ]; then
-            field="password"
-        fi
-
-        op read "op://dotfiles/$item/$field" 2>/dev/null || {
-            echo "❌ Failed to retrieve $field from $item"
-            echo "Make sure you're signed in: op signin"
-            echo "And that the item exists in your 'dotfiles' vault"
-            return 1
-        }
-    }
-
-    # Set up development environment variables from 1Password
-    op-setup-env() {
-        echo "🔐 Setting up development environment from 1Password..."
-
-        # GitHub token
-        if GITHUB_TOKEN=$(op-get-env "GitHub" "api-token"); then
-            export GITHUB_TOKEN
-            echo "✓ GitHub API token loaded"
-        fi
-
-        # Anthropic API key for Claude
-        if ANTHROPIC_API_KEY=$(op-get-env "Anthropic" "api-key"); then
-            export ANTHROPIC_API_KEY
-            echo "✓ Anthropic API key loaded"
-        fi
-
-        # Add more environment variables as needed
-        # if CUSTOM_TOKEN=$(op-get-env "Service" "token"); then
-        #     export CUSTOM_TOKEN
-        #     echo "✓ Custom token loaded"
-        # fi
-
-        echo "🚀 Development environment ready!"
-    }
-
-    # Inject SSH key from 1Password for git operations
-    op-inject-ssh() {
-        echo "🔐 Injecting SSH key from 1Password..."
-
-        if ! op whoami &>/dev/null; then
-            echo "❌ Not signed in to 1Password. Run: op signin"
-            return 1
-        fi
-
-        # Attempt to load SSH key from 1Password
-        if op read "op://dotfiles/SSH Key/private key" | ssh-add - 2>/dev/null; then
-            echo "✓ SSH key loaded successfully"
-            ssh-add -l
-        else
-            echo "❌ Failed to load SSH key from 1Password"
-            echo "Make sure you have an 'SSH Key' item in your 'dotfiles' vault"
-            echo "with a 'private key' field containing your SSH private key"
-        fi
-    }
-
-    # Check 1Password connection status
-    op-status() {
-        if op whoami &>/dev/null; then
-            local account=$(op whoami)
-            echo "✅ Signed in to 1Password as: $account"
-        else
-            echo "❌ Not signed in to 1Password"
-            echo "Run: op signin"
-        fi
-    }
-
-else
-    # Provide helpful messages when 1Password CLI is not available
-    op-get-env() {
-        echo "❌ 1Password CLI not installed"
-        echo "Install with: brew install 1password-cli"
-    }
-
-    op-setup-env() {
-        echo "❌ 1Password CLI not installed"
-        echo "Install with: brew install 1password-cli"
-    }
-
-    op-inject-ssh() {
-        echo "❌ 1Password CLI not installed"
-        echo "Install with: brew install 1password-cli"
-    }
-
-    op-status() {
-        echo "❌ 1Password CLI not installed"
-        echo "Install with: brew install 1password-cli"
-    }
-fi
 
 # Development helper functions
 
@@ -131,7 +26,7 @@ new-project() {
         git commit -m "Initial commit"
     fi
 
-    echo "✅ Created project: $project_name"
+    echo "Created project: $project_name"
     pwd
 }
 

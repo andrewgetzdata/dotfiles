@@ -1,14 +1,11 @@
-╔══════════════════════════════════════════════════════════════╗
-║                    🚀 WELCOME TO YOUR 🚀                    ║
-║                  DEVELOPMENT ENVIRONMENT                     ║
-║                                                              ║
-║  Your shell is now equipped with:                           ║
-║  • 1Password CLI integration  🔐                            ║
-║  • Enhanced productivity aliases  ⚡                        ║
-║  • Development helper functions  🛠️                         ║
-║  • ASCII welcome messages  🎨                               ║
-║                                                              ║
-║  Type 'op-status' to check 1Password connection             ║
-║  Type 'op-setup-env' to load development credentials        ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
+ █     █ █████ █     █████ █████ █   █ █████
+ █     █ █     █     █     █   █ ██ ██ █
+ █  █  █ ████  █     █     █   █ █ █ █ ████
+ █ █ █ █ █     █     █     █   █ █   █ █
+  █   █  █████ █████ █████ █████ █   █ █████
+
+  ███  █   █ ████  █████ █████ █     █
+ █   █ ██  █ █   █ █   █ █     █     █
+ █████ █ █ █ █   █ ████  ████  █  █  █
+ █   █ █  ██ █   █ █   █ █     █ █ █ █
+ █   █ █   █ ████  █   █ █████  █   █
