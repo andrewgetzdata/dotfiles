@@ -73,7 +73,7 @@ Week of {Month Day, Year}:
   DAYCARE
   Mon: Lucy - Dropoff @ Daycare (7:45 AM) | Lucy - Pickup @ Daycare (5:00 PM)
   Tue: Lucy - Dropoff @ Daycare (7:45 AM) | Lucy - Pickup @ Daycare (5:00 PM)
-  Wed: Gigi - Pickup @ Home (8:00 AM)     | Gigi - Dropoff @ Home (5:00 PM)
+  Wed: Gigi - Pickup @ Home (7:45 AM)     | Gigi - Dropoff @ Home (5:00 PM)
   Thu: Lucy - Dropoff @ Daycare (7:45 AM) | Lucy - Pickup @ Daycare (5:00 PM)
   Fri: Lucy - Dropoff @ Daycare (7:45 AM) | Lucy - Pickup @ Daycare (5:00 PM)
 
@@ -109,9 +109,9 @@ Evening event:
 
 **Event times:**
 - Morning (Daycare / Lucy or Andrew): `start` = `YYYY-MM-DDT07:45:00`, `end` = `YYYY-MM-DDT08:15:00`
-- Morning (Gigi / Home): `start` = `YYYY-MM-DDT08:00:00`, `end` = `YYYY-MM-DDT08:15:00`
+- Morning (Gigi / Home): `start` = `YYYY-MM-DDT07:45:00`, `end` = `YYYY-MM-DDT08:15:00`
 - Evening (Daycare / Lucy or Andrew): `start` = `YYYY-MM-DDT17:00:00`, `end` = `YYYY-MM-DDT17:30:00`
-- Evening (Gigi / Home): `start` = `YYYY-MM-DDT17:00:00`, `end` = `YYYY-MM-DDT17:15:00`
+- Evening (Gigi / Home): `start` = `YYYY-MM-DDT17:00:00`, `end` = `YYYY-MM-DDT17:30:00`
 
 #### Bedtime events (Mon–Sun) — 1 per day
 
