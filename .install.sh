@@ -29,8 +29,8 @@ for cmd in zsh git; do
         missing=1
     fi
 done
-for cmd in tmux nvim; do
-    if command -v "$cmd" &>/dev/null; then
+for cmd in tmux nvim ripgrep; do
+    if command -v "$cmd" &>/dev/null || { [ "$cmd" = "ripgrep" ] && command -v rg &>/dev/null; }; then
         info "$cmd found"
     else
         warn "$cmd not found (install with: brew install $cmd)"
