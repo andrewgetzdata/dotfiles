@@ -27,11 +27,11 @@ show-welcome() {
         # Show git status if in a git repo
         if git rev-parse --git-dir &>/dev/null; then
             local branch=$(git branch --show-current 2>/dev/null || echo "unknown")
-            local status=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-            if [ "$status" -eq 0 ]; then
+            local dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+            if [ "$dirty" -eq 0 ]; then
                 echo "Git: $branch (clean)"
             else
-                echo "Git: $branch ($status changes)"
+                echo "Git: $branch ($dirty changes)"
             fi
         fi
 
