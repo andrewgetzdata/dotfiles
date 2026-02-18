@@ -30,6 +30,12 @@ if [ -f "$HOME/.local/bin/claude" ]; then
     export CLAUDE_INSTALLED=1
 fi
 
+# Restore TMUX env var if inside tmux but variable was stripped
+# (Claude Code strips $TMUX; this lets teammateMode: "tmux" work)
+if [ -z "$TMUX" ] && command -v tmux &> /dev/null && tmux display-message -p '#{pid}' &> /dev/null; then
+    export TMUX="$(tmux display-message -p '#{socket_path},#{pid},#{session_name}')"
+fi
+
 # Custom bin directories (supplement existing PATH from .zprofile)
 if [ -d "$HOME/bin" ]; then
     export PATH="$HOME/bin:$PATH"
