@@ -121,7 +121,96 @@ ln -sf "$DOTFILES_DIR/skills/weekly-planning" "$HOME/.claude/skills/weekly-plann
 info "~/.claude/skills/weekly-planning -> dotfiles/skills/weekly-planning"
 echo ""
 
-# 8. Validate
+# 8. Install Claude Code plugins
+echo "Installing Claude Code plugins..."
+if command -v claude &>/dev/null; then
+    if claude plugin list 2>/dev/null | grep -q "arscontexta"; then
+        info "arscontexta plugin already installed"
+    else
+        claude plugin marketplace add agenticnotetaking/arscontexta 2>/dev/null && \
+            info "arscontexta marketplace added" || \
+            warn "could not add arscontexta marketplace"
+        claude plugin install arscontexta@agenticnotetaking 2>/dev/null && \
+            info "arscontexta plugin installed" || \
+            warn "could not install arscontexta plugin"
+    fi
+else
+    warn "claude CLI not found — skipping plugin install"
+fi
+echo ""
+
+# 9. Register MCP servers in ~/.claude.json
+# (Note: Cloud plugins — Granola, Linear — are managed via Claude.ai account)
+echo "Configuring MCP servers..."
+if command -v claude &>/dev/null; then
+    # Todoist (hosted HTTP server — no local deps)
+    if [ -f "$HOME/.claude.json" ] && grep -q '"todoist"' "$HOME/.claude.json" 2>/dev/null; then
+        info "todoist MCP already registered"
+    else
+        claude mcp add --transport http todoist https://ai.todoist.net/mcp 2>/dev/null && \
+            info "todoist MCP registered" || \
+            warn "could not register todoist MCP (run manually: claude mcp add --transport http todoist https://ai.todoist.net/mcp)"
+    fi
+
+    # Google Calendar (stdio server via npx — requires GCP OAuth credentials)
+    if [ -f "$HOME/.claude.json" ] && grep -q '"google-calendar"' "$HOME/.claude.json" 2>/dev/null; then
+        info "google-calendar MCP already registered"
+    else
+        warn "google-calendar MCP not registered"
+        echo "  To set up Google Calendar, you need GCP OAuth credentials:"
+        echo "  1. Create OAuth credentials at https://console.cloud.google.com"
+        echo "  2. Save the JSON file (e.g. ~/config/gcp-oauth.keys.json)"
+        echo "  3. Run: claude mcp add -e GOOGLE_OAUTH_CREDENTIALS=/path/to/credentials.json google-calendar npx @cocal/google-calendar-mcp"
+    fi
+
+    # qmd (local file search — BM25 + vector + LLM re-ranking via npx)
+    if [ -f "$HOME/.claude.json" ] && grep -q '"qmd"' "$HOME/.claude.json" 2>/dev/null; then
+        info "qmd MCP already registered"
+    else
+        claude mcp add qmd -- npx @tobilu/qmd mcp 2>/dev/null && \
+            info "qmd MCP registered" || \
+            warn "could not register qmd MCP (run manually: claude mcp add qmd -- npx @tobilu/qmd mcp)"
+    fi
+
+    # qmd collections (per-machine index state in ~/.cache/qmd/)
+    if npx @tobilu/qmd collection list 2>/dev/null | grep -q "tars-vault"; then
+        info "qmd collection 'tars-vault' already exists"
+    else
+        if [ -d "$HOME/tars-vault" ]; then
+            npx @tobilu/qmd collection add "$HOME/tars-vault" --name tars-vault --mask "**/*.md" 2>/dev/null && \
+                npx @tobilu/qmd embed 2>/dev/null && \
+                info "qmd collection 'tars-vault' created and embedded" || \
+                warn "could not create qmd collection (run manually: npx @tobilu/qmd collection add ~/tars-vault --name tars-vault --mask '**/*.md' && npx @tobilu/qmd embed)"
+        else
+            warn "~/tars-vault not found — skipping qmd collection setup"
+            echo "  After cloning tars-vault, run:"
+            echo "  npx @tobilu/qmd collection add ~/tars-vault --name tars-vault --mask '**/*.md'"
+            echo "  npx @tobilu/qmd embed"
+        fi
+    fi
+
+    # Check which servers need OAuth authentication
+    echo ""
+    echo "MCP OAuth status:"
+    needs_auth=false
+    for server in todoist google-calendar; do
+        if [ -f "$HOME/.claude.json" ] && grep -q "\"$server\"" "$HOME/.claude.json" 2>/dev/null; then
+            echo "  - $server: registered (authenticate via: claude → /mcp → $server → OAuth)"
+            needs_auth=true
+        fi
+    done
+    echo "  - granola, linear: managed via Claude.ai cloud account (auto-available when logged in)"
+    if [ "$needs_auth" = true ]; then
+        warn "Local MCP servers require browser OAuth on first use per machine"
+    fi
+else
+    warn "claude CLI not found — skipping MCP server setup"
+    echo "  Install Claude Code, then re-run this script or manually add MCP servers:"
+    echo "  claude mcp add --transport http todoist https://ai.todoist.net/mcp"
+fi
+echo ""
+
+# 10. Validate
 echo "Validating..."
 all_good=true
 for f in "$DOTFILES_DIR/shell/exports.zsh" "$DOTFILES_DIR/shell/aliases.zsh" \
@@ -152,7 +241,7 @@ for link in "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.claude/CLAUDE.md" \
 done
 echo ""
 
-# 9. Prompt for .dotfiles_env
+# 11. Prompt for .dotfiles_env
 if [ ! -f "$DOTFILES_DIR/config/.dotfiles_env" ]; then
     warn ".dotfiles_env not found"
     echo "  Copy the example and fill in your keys:"
@@ -160,7 +249,7 @@ if [ ! -f "$DOTFILES_DIR/config/.dotfiles_env" ]; then
     echo ""
 fi
 
-# 10. Done
+# 12. Done
 echo "Setup complete!"
 echo ""
 echo "Next steps:"
@@ -168,5 +257,9 @@ echo "  1. source ~/.zshrc"
 echo "  2. Set up .dotfiles_env with your API keys (if not done)"
 echo "  3. Open tmux: tmux new -s dev"
 echo "  4. Open nvim inside tmux to test Ctrl+h/j/k/l navigation"
-echo "  5. Granola MCP: authenticate via browser on first use (no API key needed)"
+echo "  5. MCP servers: authenticate local servers via browser on first use"
+echo "     run 'claude' → /mcp → select server → complete OAuth"
+echo "  6. Ars Contexta vault: if not set up yet, run:"
+echo "     cd ~/tars-vault && claude"
+echo "     then: /arscontexta:setup"
 echo ""
