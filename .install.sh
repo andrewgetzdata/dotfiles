@@ -119,6 +119,18 @@ ln -sf "$DOTFILES_DIR/skills/execute-tickets" "$HOME/.claude/skills/execute-tick
 info "~/.claude/skills/execute-tickets -> dotfiles/skills/execute-tickets"
 ln -sf "$DOTFILES_DIR/skills/weekly-planning" "$HOME/.claude/skills/weekly-planning"
 info "~/.claude/skills/weekly-planning -> dotfiles/skills/weekly-planning"
+ln -sf "$DOTFILES_DIR/skills/morning" "$HOME/.claude/skills/morning"
+info "~/.claude/skills/morning -> dotfiles/skills/morning"
+ln -sf "$DOTFILES_DIR/skills/evening" "$HOME/.claude/skills/evening"
+info "~/.claude/skills/evening -> dotfiles/skills/evening"
+ln -sf "$DOTFILES_DIR/skills/wrap-up" "$HOME/.claude/skills/wrap-up"
+info "~/.claude/skills/wrap-up -> dotfiles/skills/wrap-up"
+ln -sf "$DOTFILES_DIR/skills/prep" "$HOME/.claude/skills/prep"
+info "~/.claude/skills/prep -> dotfiles/skills/prep"
+ln -sf "$DOTFILES_DIR/skills/process" "$HOME/.claude/skills/process"
+info "~/.claude/skills/process -> dotfiles/skills/process"
+ln -sf "$DOTFILES_DIR/skills/save-context" "$HOME/.claude/skills/save-context"
+info "~/.claude/skills/save-context -> dotfiles/skills/save-context"
 echo ""
 
 # 8. Install Claude Code plugins
@@ -231,7 +243,10 @@ for link in "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.claude/CLAUDE.md" \
             "$HOME/.claude/skills/granola-latest" "$HOME/.claude/skills/edit-copy" \
             "$HOME/.claude/skills/new-blog-post" "$HOME/.claude/skills/new-project" \
             "$HOME/.claude/skills/plan-tickets" "$HOME/.claude/skills/execute-tickets" \
-            "$HOME/.claude/skills/weekly-planning"; do
+            "$HOME/.claude/skills/weekly-planning" "$HOME/.claude/skills/morning" \
+            "$HOME/.claude/skills/evening" "$HOME/.claude/skills/wrap-up" \
+            "$HOME/.claude/skills/prep" "$HOME/.claude/skills/process" \
+            "$HOME/.claude/skills/save-context"; do
     if [ -L "$link" ]; then
         info "symlink $(basename $link) ok"
     else
