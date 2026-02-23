@@ -121,25 +121,7 @@ ln -sf "$DOTFILES_DIR/skills/weekly-planning" "$HOME/.claude/skills/weekly-plann
 info "~/.claude/skills/weekly-planning -> dotfiles/skills/weekly-planning"
 echo ""
 
-# 8. Install Claude Code plugins
-echo "Installing Claude Code plugins..."
-if command -v claude &>/dev/null; then
-    if claude plugin list 2>/dev/null | grep -q "arscontexta"; then
-        info "arscontexta plugin already installed"
-    else
-        claude plugin marketplace add agenticnotetaking/arscontexta 2>/dev/null && \
-            info "arscontexta marketplace added" || \
-            warn "could not add arscontexta marketplace"
-        claude plugin install arscontexta@agenticnotetaking 2>/dev/null && \
-            info "arscontexta plugin installed" || \
-            warn "could not install arscontexta plugin"
-    fi
-else
-    warn "claude CLI not found — skipping plugin install"
-fi
-echo ""
-
-# 9. Register MCP servers in ~/.claude.json
+# 8. Register MCP servers in ~/.claude.json
 # (Note: Cloud plugins — Granola, Linear — are managed via Claude.ai account)
 echo "Configuring MCP servers..."
 if command -v claude &>/dev/null; then
@@ -259,7 +241,4 @@ echo "  3. Open tmux: tmux new -s dev"
 echo "  4. Open nvim inside tmux to test Ctrl+h/j/k/l navigation"
 echo "  5. MCP servers: authenticate local servers via browser on first use"
 echo "     run 'claude' → /mcp → select server → complete OAuth"
-echo "  6. Ars Contexta vault: if not set up yet, run:"
-echo "     cd ~/tars-vault && claude"
-echo "     then: /arscontexta:setup"
 echo ""
