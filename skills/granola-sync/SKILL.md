@@ -1,12 +1,12 @@
 ---
 name: granola-sync
 description: This skill should be used when the user asks to "sync meetings", "sync granola", "pull meetings from granola", or wants to sync the last 7 days of Granola meetings into markdown files.
-version: 2.0.0
+version: 3.0.0
 ---
 
-# Granola sync (last 7 days)
+# Granola sync — summaries only (last 7 days)
 
-Sync Granola meetings from the last 7 days (including today) into the `meetings/` folder as markdown files. Create new files or update existing ones matched by meetingID.
+Sync Granola meeting **summaries** from the last 7 days (including today) into the `meetings/` folder as markdown files. Transcripts are NOT fetched here — use `/granola-sync-transcripts` separately. This skill also maintains `granola_helper.json` to track sync status.
 
 ## 1. Date range
 
@@ -29,18 +29,19 @@ Before processing, read all existing `.md` files in the `meetings/` folder to un
 - What **topics** are used across notes (to inform topic guessing for new meetings).
 - The title slug conventions used (to stay consistent).
 
+Also read **`granola_helper.json`** (at the same level as `web_urls.json` in the vault root) if it exists. If it does not exist, it will be created in step 5.
+
 ## 4. Process meetings one at a time
 
-**IMPORTANT — Rate limit prevention:** Process each meeting **sequentially**, one at a time. Do NOT call get_meetings or get_meeting_transcript for multiple meetings in parallel. After finishing all API calls and file writes for one meeting, **wait 30 seconds** (use Bash `sleep 30`) before starting the next meeting.
+**IMPORTANT — Rate limit prevention:** Process each meeting **sequentially**, one at a time. Do NOT call get_meetings for multiple meetings in parallel. After finishing all API calls and file writes for one meeting, **wait 30 seconds** (use Bash `sleep 30`) before starting the next meeting.
 
 Loop through the meeting IDs collected in step 2. For each meeting:
 
-### 4.1 Fetch details and transcript
+### 4.1 Fetch details (summary only)
 
 - Call **get_meetings** with `meeting_ids`: `[<this meeting's id>]`.
-- Then call **get_meeting_transcript** with `meeting_id`: `<this meeting's id>`.
-- These two calls for the same meeting may be made in parallel, but do NOT overlap with calls for other meetings.
-- From the meeting response: keep **date**, **known_participants**, **summary** (Meeting Overview, Key Points, Next Steps). From transcript: keep the **transcript** text.
+- Do **NOT** call get_meeting_transcript — transcripts are handled by `/granola-sync-transcripts`.
+- From the meeting response: keep **date**, **known_participants**, **summary** (Meeting Overview, Key Points, Next Steps).
 
 ### 4.2 Find existing file (already pulled?)
 
@@ -67,7 +68,7 @@ Write a **short, plain-text description** (one sentence) summarizing what the me
 ### 4.5 Generate topics
 
 Assign **topics** as wiki-style references in `[[kebab-case]]` format. Use your best judgment based on:
-- The meeting summary and transcript content.
+- The meeting summary content.
 - Topics already used in existing meeting notes (prefer reusing existing topic names).
 - Common topic examples: `[[claude-code]]`, `[[figma]]`, `[[mcp]]`, `[[data-engineering]]`, `[[SAP]]`, `[[architecture]]`, `[[planning]]`.
 - Assign 2-5 relevant topics per meeting.
@@ -91,11 +92,11 @@ Fill the frontmatter and body as follows:
 
 **Summary:** Use the summary from **get_meetings** (Meeting Overview, Key Points, Next Steps). Keep that structure under `## Summary` in the body.
 
-**Transcript:** Use the transcript from **get_meeting_transcript** verbatim under `## Transcript`.
+**Transcript placeholder:** Add a `## Transcript` section with the text `*Transcript not yet synced. Run /granola-sync-transcripts to pull transcripts.*`
 
 ### 4.7 Write the file
 
-- **If you found an existing file** with this meetingID in frontmatter: overwrite that file with the full new content (frontmatter + Summary + Transcript).
+- **If you found an existing file** with this meetingID in frontmatter: update the frontmatter and Summary section. **Preserve the existing Transcript section if it has real content** (i.e. don't overwrite a real transcript with the placeholder).
 - **If no file found:** Create a new file in the `meetings/` folder using the generated filename from step 4.3.
 
 ### 4.8 Wait before next meeting
@@ -103,12 +104,40 @@ Fill the frontmatter and body as follows:
 - If there are more meetings to process, run `sleep 30` via Bash before starting the next one.
 - This prevents Granola API rate limiting.
 
-## 5. Report back
+## 5. Update granola_helper.json
+
+After processing all meetings, read or create `granola_helper.json` at the vault root (same level as `web_urls.json`). The file tracks sync status for every known meeting:
+
+```json
+{
+  "meetings": {
+    "<meetingID-uuid>": {
+      "title": "Meeting title from Granola",
+      "date": "YYYY-MM-DD",
+      "file": "meetings/YYYY-MM-DD-slug-title.md",
+      "status": "summary_synced"
+    }
+  }
+}
+```
+
+**Status values:**
+- `"not_synced"` — meeting known but nothing pulled yet
+- `"summary_synced"` — summary written, transcript not yet pulled
+- `"transcript_synced"` — both summary and transcript are in the file
+
+For each meeting processed in this run:
+- If it's new, add an entry with `"status": "summary_synced"`.
+- If it already exists with `"transcript_synced"`, do NOT downgrade it — leave as `"transcript_synced"`.
+- If it already exists with `"summary_synced"`, leave as `"summary_synced"`.
+
+## 6. Report back
 
 After processing all meetings, report:
 - How many meetings were in range.
 - Which files were **created** (path/name).
 - Which files were **updated** (path/name).
+- Current granola_helper.json status counts.
 
 ## Reference: template structure
 
@@ -137,6 +166,8 @@ topics: []   # e.g. ["[[claude-code]]", "[[figma]]"]
 ---
 
 ## Transcript
+
+*Transcript not yet synced. Run /granola-sync-transcripts to pull transcripts.*
 ```
 
-Summary and Transcript content come from Granola (get_meetings summary and get_meeting_transcript).
+Summary content comes from Granola (get_meetings summary). Transcripts are synced separately via `/granola-sync-transcripts`.
