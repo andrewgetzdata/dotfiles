@@ -4,7 +4,9 @@
   },
   "permissions": {
     "allow": [
-      "mcp__pencil"
+      "Read",
+      "Glob",
+      "Grep"
     ]
   },
   "enabledPlugins": {
