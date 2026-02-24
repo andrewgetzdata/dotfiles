@@ -101,36 +101,25 @@ info "~/.claude/CLAUDE.md -> dotfiles/claude/CLAUDE.md"
 ln -sf "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 info "~/.claude/settings.json -> dotfiles/claude/settings.json"
 
-# 7. Symlink skills
+# 7. Symlink skills (auto-discovers all skill directories)
 mkdir -p "$HOME/.claude/skills"
-ln -sf "$DOTFILES_DIR/skills/granola-sync" "$HOME/.claude/skills/granola-sync"
-info "~/.claude/skills/granola-sync -> dotfiles/skills/granola-sync"
-ln -sf "$DOTFILES_DIR/skills/granola-latest" "$HOME/.claude/skills/granola-latest"
-info "~/.claude/skills/granola-latest -> dotfiles/skills/granola-latest"
-ln -sf "$DOTFILES_DIR/skills/edit-copy" "$HOME/.claude/skills/edit-copy"
-info "~/.claude/skills/edit-copy -> dotfiles/skills/edit-copy"
-ln -sf "$DOTFILES_DIR/skills/new-blog-post" "$HOME/.claude/skills/new-blog-post"
-info "~/.claude/skills/new-blog-post -> dotfiles/skills/new-blog-post"
-ln -sf "$DOTFILES_DIR/skills/new-project" "$HOME/.claude/skills/new-project"
-info "~/.claude/skills/new-project -> dotfiles/skills/new-project"
-ln -sf "$DOTFILES_DIR/skills/plan-tickets" "$HOME/.claude/skills/plan-tickets"
-info "~/.claude/skills/plan-tickets -> dotfiles/skills/plan-tickets"
-ln -sf "$DOTFILES_DIR/skills/execute-tickets" "$HOME/.claude/skills/execute-tickets"
-info "~/.claude/skills/execute-tickets -> dotfiles/skills/execute-tickets"
-ln -sf "$DOTFILES_DIR/skills/weekly-planning" "$HOME/.claude/skills/weekly-planning"
-info "~/.claude/skills/weekly-planning -> dotfiles/skills/weekly-planning"
-ln -sf "$DOTFILES_DIR/skills/morning" "$HOME/.claude/skills/morning"
-info "~/.claude/skills/morning -> dotfiles/skills/morning"
-ln -sf "$DOTFILES_DIR/skills/evening" "$HOME/.claude/skills/evening"
-info "~/.claude/skills/evening -> dotfiles/skills/evening"
-ln -sf "$DOTFILES_DIR/skills/wrap-up" "$HOME/.claude/skills/wrap-up"
-info "~/.claude/skills/wrap-up -> dotfiles/skills/wrap-up"
-ln -sf "$DOTFILES_DIR/skills/prep" "$HOME/.claude/skills/prep"
-info "~/.claude/skills/prep -> dotfiles/skills/prep"
-ln -sf "$DOTFILES_DIR/skills/process" "$HOME/.claude/skills/process"
-info "~/.claude/skills/process -> dotfiles/skills/process"
-ln -sf "$DOTFILES_DIR/skills/save-context" "$HOME/.claude/skills/save-context"
-info "~/.claude/skills/save-context -> dotfiles/skills/save-context"
+skill_count=0
+for skill_dir in "$DOTFILES_DIR"/skills/*/; do
+    [ -d "$skill_dir" ] || continue
+    skill_name=$(basename "$skill_dir")
+    [ -f "$skill_dir/SKILL.md" ] || { warn "skills/$skill_name has no SKILL.md, skipping"; continue; }
+
+    # Create self-referencing symlink inside skill dir (required for Claude Code discovery)
+    if [ ! -L "$skill_dir/$skill_name" ]; then
+        ln -sf "$skill_dir" "$skill_dir/$skill_name"
+        info "created self-ref symlink for $skill_name"
+    fi
+
+    # Symlink skill into ~/.claude/skills/
+    ln -sf "$skill_dir" "$HOME/.claude/skills/$skill_name"
+    skill_count=$((skill_count + 1))
+done
+info "linked $skill_count skills to ~/.claude/skills/"
 echo ""
 
 # 8. Register MCP servers in ~/.claude.json
@@ -221,18 +210,24 @@ for f in "$DOTFILES_DIR/shell/exports.zsh" "$DOTFILES_DIR/shell/aliases.zsh" \
 done
 
 for link in "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.claude/CLAUDE.md" \
-            "$HOME/.claude/settings.json" "$HOME/.claude/skills/granola-sync" \
-            "$HOME/.claude/skills/granola-latest" "$HOME/.claude/skills/edit-copy" \
-            "$HOME/.claude/skills/new-blog-post" "$HOME/.claude/skills/new-project" \
-            "$HOME/.claude/skills/plan-tickets" "$HOME/.claude/skills/execute-tickets" \
-            "$HOME/.claude/skills/weekly-planning" "$HOME/.claude/skills/morning" \
-            "$HOME/.claude/skills/evening" "$HOME/.claude/skills/wrap-up" \
-            "$HOME/.claude/skills/prep" "$HOME/.claude/skills/process" \
-            "$HOME/.claude/skills/save-context"; do
+            "$HOME/.claude/settings.json"; do
     if [ -L "$link" ]; then
         info "symlink $(basename $link) ok"
     else
         fail "symlink $(basename $link) broken or missing"
+        all_good=false
+    fi
+done
+
+# Validate skill symlinks dynamically
+for skill_dir in "$DOTFILES_DIR"/skills/*/; do
+    [ -d "$skill_dir" ] || continue
+    skill_name=$(basename "$skill_dir")
+    [ -f "$skill_dir/SKILL.md" ] || continue
+    if [ -L "$HOME/.claude/skills/$skill_name" ]; then
+        info "skill $skill_name ok"
+    else
+        fail "skill $skill_name symlink broken or missing"
         all_good=false
     fi
 done
