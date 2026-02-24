@@ -2,13 +2,14 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "teammateMode": "tmux",
-  "enabledPlugins": {
-    "arscontexta@agenticnotetaking": true
-  },
   "permissions": {
     "allow": [
       "mcp__pencil"
     ]
-  }
+  },
+  "enabledPlugins": {
+    "arscontexta@agenticnotetaking": true
+  },
+  "teammateMode": "tmux",
+  "effortLevel": "medium"
 }
