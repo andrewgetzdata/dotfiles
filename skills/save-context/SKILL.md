@@ -1,6 +1,6 @@
 # /save-context — Save Session Context
 
-Save a summary of the current conversation to `agent-context/` so future sessions can pick up where this one left off.
+Save a summary of the current conversation to `~/tars-vault/agent-context/` so future sessions can pick up where this one left off.
 
 ## Procedure
 
@@ -17,7 +17,9 @@ Review the current conversation and extract:
 
 ### 2. Write the context file
 
-Save to `agent-context/YYYY-MM-DD-descriptive-title.md` using today's date and a lowercase-hyphenated version of the session title.
+Save to `~/tars-vault/agent-context/YYYY-MM-DD-descriptive-title.md` using today's date and a lowercase-hyphenated version of the session title.
+
+Before writing, ask the user which project from `~/tars-vault/projects/` this session is associated with.
 
 ```markdown
 ---
@@ -25,6 +27,7 @@ description: one-line summary of the session
 topics:
   - "[[topic]]"
 date: YYYY-MM-DD
+bucket: "[[project-name]]"
 ---
 
 # Session title
@@ -49,7 +52,15 @@ Where things stand. What's working, what's not.
 Important details for future sessions to know.
 ```
 
-### 3. Confirm
+### 3. Link from the project file
+
+Append a wiki-link to the new context file under today's date heading in `~/tars-vault/projects/<project-name>.md`. If today's date heading (`## [[YYYY-MM-DD]]`) doesn't exist yet, create it. Format:
+
+```markdown
+- [[YYYY-MM-DD-descriptive-title]] — one-line summary
+```
+
+### 4. Confirm
 
 Report the filename and a one-line summary of what was saved.
 
