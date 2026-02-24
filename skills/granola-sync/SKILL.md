@@ -22,14 +22,17 @@ Sync Granola meetings from the last 7 days (including today) into root-level mar
   - `custom_end`: (computed above)
 - Note every meeting **id**, **title**, and **date** returned.
 
-## 3. For each meeting
+## 3. Process meetings one at a time
 
-Do the following for each meeting from step 2.
+**IMPORTANT — Rate limit prevention:** Process each meeting **sequentially**, one at a time. Do NOT call get_meetings or get_meeting_transcript for multiple meetings in parallel. After finishing all API calls and file writes for one meeting, **wait 30 seconds** (use Bash `sleep 30`) before starting the next meeting.
+
+Loop through the meeting IDs collected in step 2. For each meeting:
 
 ### 3.1 Fetch details and transcript
 
 - Call **get_meetings** with `meeting_ids`: `[<this meeting's id>]`.
-- Call **get_meeting_transcript** with `meeting_id`: `<this meeting's id>`.
+- Then call **get_meeting_transcript** with `meeting_id`: `<this meeting's id>`.
+- These two calls for the same meeting may be made in parallel, but do NOT overlap with calls for other meetings.
 - From the meeting response: keep **date**, **known_participants**, **summary** (Meeting Overview, Key Points, Next Steps). From transcript: keep the **transcript** text.
 
 ### 3.2 Find existing file (already pulled?)
@@ -62,6 +65,11 @@ Use the structure of **templates/Meeting Template.md**. Fill as follows:
 
 - **If you found an existing file** with this meetingID in frontmatter: overwrite that file with the full new content (frontmatter + Summary + Transcript).
 - **If no file found:** Create a **new** file at the **root** of the workspace. Filename = meeting title, sanitized: remove or replace `/ \ : * ? " < > |`, trim; if empty use meeting ID or date. Extension: `.md`. If another file already exists with the same sanitized title, add a disambiguator (e.g. `Meeting title (YYYY-MM-DD).md`).
+
+### 3.5 Wait before next meeting
+
+- If there are more meetings to process, run `sleep 30` via Bash before starting the next one.
+- This prevents Granola API rate limiting.
 
 ## 4. Report back
 
