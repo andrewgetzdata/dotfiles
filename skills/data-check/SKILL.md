@@ -1,12 +1,12 @@
 ---
 name: data-check
-description: Validate and fill missing properties across all meeting notes. Use when the user asks to "check meetings data", "validate meeting notes", "data check", or wants to ensure all meetings/ notes have consistent, complete frontmatter.
-version: 1.0.0
+description: Validate and fill missing properties across all meeting notes and people notes. Use when the user asks to "check meetings data", "validate meeting notes", "data check", or wants to ensure all meetings/ and people/ notes have consistent, complete frontmatter.
+version: 1.1.0
 ---
 
-# Data check — meetings property validation
+# Data check — meetings & people property validation
 
-Scan all meeting notes in the `meetings/` folder, verify that every note has the same set of properties and that all properties are filled. Attempt to fill missing values and ask the user to confirm before writing.
+Scan all meeting notes in `meetings/` and people notes in `people/`, verify that every note has the correct set of properties and that all properties are filled. Attempt to fill missing values and ask the user to confirm before writing.
 
 ## 1. Define the canonical schema
 
@@ -81,10 +81,57 @@ After user confirmation:
 - Preserve the note body (Summary + Transcript) exactly as-is.
 - Ensure consistent YAML formatting (no trailing spaces, proper quoting).
 
-## 7. Report
+## 7. People notes validation
+
+After meeting notes are handled, scan all `.md` files in the `people/` folder.
+
+### 7a. Define the canonical people schema
+
+Every people note must have exactly these frontmatter properties:
+
+```yaml
+buckets:        # Array, must be ["[[People]]"]
+organization:   # Array of wiki-refs, e.g. ["[[Fountain]]"] — or empty if unknown
+createdDate:    # YYYY-MM-DD
+role:           # String (job title) — or empty if unknown
+aliases:        # Array of strings (e.g. ["Alex"]) — or empty if none
+```
+
+### 7b. Check people notes
+
+For each note, check:
+
+1. **Missing properties:** Any canonical property not present in frontmatter.
+2. **Empty required properties:** `buckets` must always be `["[[People]]"]`.
+3. **Extra properties:** Any property not in the canonical schema (e.g. `email`, `clippedDate`). Propose removal.
+4. **Filename format:** Should be `lowercase-hyphenated-name.md`. Flag mismatches.
+5. **Heading:** Body should start with `# Full Name` matching the filename.
+
+### 7c. Cross-reference with meetings
+
+Collect all unique `[[Person Name]]` references from the `people:` property across all meeting notes. For each:
+
+1. **Missing people file:** If a person is referenced in meetings but has no file in `people/`, flag it and propose creating one from the template.
+2. **Stale meetings list:** If a people note has a `## Meetings` section, verify it lists all meetings where that person appears. Flag missing meeting links.
+
+### 7d. Attempt to fill missing/empty values
+
+| Property | How to fill |
+|----------|-------------|
+| **buckets** | Default: `["[[People]]"]` |
+| **organization** | Infer from meetings context (most people are `["[[Fountain]]"]`) |
+| **createdDate** | Use the date of the earliest meeting they appear in |
+| **role** | Leave empty if unknown — do not guess |
+| **aliases** | Leave empty if unknown |
+
+### 7e. Present people changes for confirmation
+
+Same format as meeting changes — display all proposed changes grouped by file and wait for user approval before applying.
+
+## 8. Report
 
 After applying:
-- How many files were scanned.
-- How many files had issues.
-- How many files were updated.
+- How many meeting files were scanned and updated.
+- How many people files were scanned and updated.
+- How many missing people notes were flagged or created.
 - Any files with unresolvable issues (e.g. missing meetingID).
