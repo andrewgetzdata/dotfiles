@@ -24,5 +24,8 @@ All servers use browser OAuth (except qmd — no auth needed). Authenticate each
 
 **Note:** `settings.json` is for behavior settings only (permissions, env vars). MCP servers do NOT go in `settings.json` — they are silently ignored there.
 
+## Linear Projects
+- **Context Engine**: `b52b3db4-2e01-460b-bcca-61c6ca27d7ab` (DAT team)
+
 ## Preferences
 <!-- Add preferences here as you discover them -->
