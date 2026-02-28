@@ -10,8 +10,26 @@
     ]
   },
   "enabledPlugins": {
-    "arscontexta@agenticnotetaking": true
+    "arscontexta@agenticnotetaking": true,
+    "dagster-expert@dagster": true,
+    "dagster-integrations@dagster": true,
+    "dignified-python@dagster": true
   },
+  "alwaysThinkingEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
   "teammateMode": "tmux",
-  "effortLevel": "medium"
+  "effortLevel": "medium",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Bottle.aiff"
+          }
+        ]
+      }
+    ]
+  }
 }

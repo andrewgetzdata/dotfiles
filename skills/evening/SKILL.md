@@ -7,8 +7,12 @@ Wind down and set up tomorrow for success.
 ### 1. Check tomorrow's calendar
 
 Use Google Calendar MCP tools:
-1. `list-events` for tomorrow — meetings, commitments, time blocks
-2. Flag anything that needs prep (materials, agendas, context)
+1. `list-events` for tomorrow from **both calendars** — query each separately:
+   - `primary` (Andrew's Personal)
+   - `bcjlfb5ui948dc914cerjil94g@group.calendar.google.com` (Lucy & Andrew)
+2. Merge and sort all events chronologically
+3. Flag anything that needs prep (materials, agendas, context)
+4. Identify focus time blocks (gaps between Leo duties, meetings, etc.)
 
 ### 2. Review tomorrow's tasks
 

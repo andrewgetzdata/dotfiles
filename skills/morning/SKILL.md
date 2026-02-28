@@ -8,8 +8,12 @@ Start the day with a clear picture of what's ahead and what matters.
 
 Use Google Calendar MCP tools:
 1. `get-current-time` to confirm the date
-2. `list-events` for today — show all meetings, blocks, and commitments
-3. Note any prep needed for upcoming meetings
+2. `list-events` for today from **both calendars** — query each separately:
+   - `primary` (Andrew's Personal)
+   - `bcjlfb5ui948dc914cerjil94g@group.calendar.google.com` (Lucy & Andrew)
+3. Merge and sort all events chronologically
+4. Note any prep needed for upcoming meetings
+5. Identify focus time blocks (gaps between Leo duties, meetings, etc.)
 
 ### 2. Check today's tasks
 
