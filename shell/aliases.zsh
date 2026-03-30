@@ -45,6 +45,7 @@ alias dotfiles="cd $HOME/dotfiles"
 
 # Claude Code aliases (if available)
 if command -v claude &> /dev/null; then
+    alias cc="claude"
     alias ai="claude"
     alias code-review="claude -p 'Review this code for issues, security vulnerabilities, and improvements'"
     alias code-test="claude -p 'Generate comprehensive tests for this code'"

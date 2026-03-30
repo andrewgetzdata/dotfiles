@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+# Zsh Configuration
+# Managed by dotfiles — symlinked to ~/.zshrc
+
+# Oh My Zsh
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
+
+# Dotfiles Environment Setup
+if [ -f "$HOME/dotfiles/shell/exports.zsh" ]; then
+    source "$HOME/dotfiles/shell/exports.zsh"
+fi
+if [ -f "$HOME/dotfiles/shell/aliases.zsh" ]; then
+    source "$HOME/dotfiles/shell/aliases.zsh"
+fi
+if [ -f "$HOME/dotfiles/shell/functions.zsh" ]; then
+    source "$HOME/dotfiles/shell/functions.zsh"
+fi
+if [ -f "$HOME/dotfiles/shell/welcome.zsh" ]; then
+    source "$HOME/dotfiles/shell/welcome.zsh"
+fi
+if [ -f "$HOME/dotfiles/config/.dotfiles_env" ]; then
+    source "$HOME/dotfiles/config/.dotfiles_env"
+fi
