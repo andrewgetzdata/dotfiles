@@ -9,16 +9,6 @@
       "Grep"
     ]
   },
-  "enabledPlugins": {
-    "arscontexta@agenticnotetaking": true,
-    "dagster-expert@dagster": true,
-    "dagster-integrations@dagster": true,
-    "dignified-python@dagster": true
-  },
-  "alwaysThinkingEnabled": false,
-  "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "tmux",
-  "effortLevel": "medium",
   "hooks": {
     "Stop": [
       {
@@ -27,9 +17,17 @@
           {
             "type": "command",
             "command": "afplay /System/Library/Sounds/Bottle.aiff"
+          },
+          {
+            "type": "command",
+            "command": "curl -s -X POST https://api.getmoshi.app/api/webhook -H 'Content-Type: application/json' -d '{\"token\": \"0GtkSdxiRnNhyYt8DFRGsjLjYQyyWVAu\", \"title\": \"Claude Code\", \"message\": \"Task complete\"}'"
           }
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {},
+  "alwaysThinkingEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "teammateMode": "tmux"
 }

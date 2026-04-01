@@ -45,7 +45,7 @@ echo ""
 # 2. Backup existing files
 echo "Backing up existing configs..."
 mkdir -p "$BACKUP_DIR"
-for f in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.tmux.conf"; do
+for f in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.tmux.conf" "$HOME/.gitconfig"; do
     [ -f "$f" ] && cp "$f" "$BACKUP_DIR/" && info "backed up $(basename $f)"
 done
 [ -d "$HOME/.config/nvim" ] && cp -r "$HOME/.config/nvim" "$BACKUP_DIR/nvim" && info "backed up nvim config"
@@ -54,41 +54,33 @@ done
 echo "Backups in: $BACKUP_DIR"
 echo ""
 
-# 3. Append source lines to ~/.zshrc
+# 3. Symlink shell configs
 echo "Configuring shell..."
-if ! grep -q "# Dotfiles Environment Setup" "$HOME/.zshrc" 2>/dev/null; then
-    cat >> "$HOME/.zshrc" << 'EOF'
-
-# Dotfiles Environment Setup
-if [ -f "$HOME/dotfiles/shell/exports.zsh" ]; then
-    source "$HOME/dotfiles/shell/exports.zsh"
-fi
-if [ -f "$HOME/dotfiles/shell/aliases.zsh" ]; then
-    source "$HOME/dotfiles/shell/aliases.zsh"
-fi
-if [ -f "$HOME/dotfiles/shell/functions.zsh" ]; then
-    source "$HOME/dotfiles/shell/functions.zsh"
-fi
-if [ -f "$HOME/dotfiles/shell/welcome.zsh" ]; then
-    source "$HOME/dotfiles/shell/welcome.zsh"
-fi
-if [ -f "$HOME/dotfiles/config/.dotfiles_env" ]; then
-    source "$HOME/dotfiles/config/.dotfiles_env"
-fi
-# End Dotfiles Environment Setup
-EOF
-    info "added source lines to ~/.zshrc"
-else
-    warn "dotfiles source lines already in ~/.zshrc, skipping"
-fi
+ln -sf "$DOTFILES_DIR/shell/zshrc" "$HOME/.zshrc"
+info "~/.zshrc -> dotfiles/shell/zshrc"
+ln -sf "$DOTFILES_DIR/shell/zprofile" "$HOME/.zprofile"
+info "~/.zprofile -> dotfiles/shell/zprofile"
 echo ""
 
-# 4. Symlink tmux.conf
+# 4. Install Homebrew packages (if Brewfile exists and brew is available)
+if [ -f "$DOTFILES_DIR/Brewfile" ] && command -v brew &>/dev/null; then
+    echo "Installing Homebrew packages..."
+    brew bundle --file="$DOTFILES_DIR/Brewfile" --no-lock 2>/dev/null && \
+        info "Brewfile packages installed" || \
+        warn "some Brewfile packages failed (run manually: brew bundle --file=$DOTFILES_DIR/Brewfile)"
+    echo ""
+fi
+
+# 5. Symlink tmux.conf
 echo "Creating symlinks..."
 ln -sf "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 info "~/.tmux.conf -> dotfiles/tmux/tmux.conf"
 
-# 5. Symlink nvim config
+# 6. Symlink gitconfig
+ln -sf "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
+info "~/.gitconfig -> dotfiles/git/gitconfig"
+
+# 7. Symlink nvim config
 mkdir -p "$HOME/.config"
 rm -rf "$HOME/.config/nvim"
 ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
@@ -196,10 +188,12 @@ echo ""
 # 10. Validate
 echo "Validating..."
 all_good=true
-for f in "$DOTFILES_DIR/shell/exports.zsh" "$DOTFILES_DIR/shell/aliases.zsh" \
+for f in "$DOTFILES_DIR/shell/zshrc" "$DOTFILES_DIR/shell/zprofile" \
+         "$DOTFILES_DIR/shell/exports.zsh" "$DOTFILES_DIR/shell/aliases.zsh" \
          "$DOTFILES_DIR/shell/functions.zsh" "$DOTFILES_DIR/shell/welcome.zsh" \
          "$DOTFILES_DIR/config/ascii-art.txt" "$DOTFILES_DIR/tmux/tmux.conf" \
-         "$DOTFILES_DIR/nvim/init.lua" "$DOTFILES_DIR/claude/CLAUDE.md" \
+         "$DOTFILES_DIR/nvim/init.lua" "$DOTFILES_DIR/git/gitconfig" \
+         "$DOTFILES_DIR/claude/CLAUDE.md" \
          "$DOTFILES_DIR/claude/settings.json"; do
     if [ -f "$f" ]; then
         info "$(basename $f) exists"
@@ -209,8 +203,9 @@ for f in "$DOTFILES_DIR/shell/exports.zsh" "$DOTFILES_DIR/shell/aliases.zsh" \
     fi
 done
 
-for link in "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.claude/CLAUDE.md" \
-            "$HOME/.claude/settings.json"; do
+for link in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.tmux.conf" \
+            "$HOME/.gitconfig" "$HOME/.config/nvim" \
+            "$HOME/.claude/CLAUDE.md" "$HOME/.claude/settings.json"; do
     if [ -L "$link" ]; then
         info "symlink $(basename $link) ok"
     else

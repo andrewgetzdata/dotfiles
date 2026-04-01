@@ -7,7 +7,10 @@ Portable dev environment: zsh + tmux + nvim + Claude Code.
 - **Shell** — modular zsh config (exports, aliases, functions, welcome banner)
 - **tmux** — sensible defaults, `Ctrl-a` prefix, vim-tmux-navigator integration
 - **Neovim** — minimal `init.lua` with lazy.nvim and vim-tmux-navigator
+- **Git** — global gitconfig (identity, rebase on pull, auto upstream)
 - **Claude Code** — user-level `CLAUDE.md`, settings (tmux teammate mode), and custom skills
+- **Brewfile** — Homebrew packages and casks for reproducible installs
+- **Docs** — style guides (Python, TypeScript, testing) and tool cheatsheets
 - **Secrets** — per-machine `.dotfiles_env` file (gitignored)
 
 ## Requirements
@@ -28,10 +31,12 @@ bash .install.sh
 ```
 
 The install script will:
-1. Back up existing configs
-2. Add source lines to `~/.zshrc`
-3. Symlink tmux, nvim, and Claude Code configs
-4. Prompt you to set up API keys in `config/.dotfiles_env`
+1. Back up existing configs (zshrc, zprofile, tmux, gitconfig, nvim, Claude)
+2. Install Homebrew packages from `Brewfile`
+3. Add source lines to `~/.zshrc`
+4. Symlink tmux, git, nvim, and Claude Code configs
+5. Register MCP servers (Todoist, Google Calendar, qmd)
+6. Prompt you to set up API keys in `config/.dotfiles_env`
 
 ## MCP Servers
 
