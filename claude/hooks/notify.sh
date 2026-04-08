@@ -3,7 +3,15 @@
 # Sends a macOS notification when Claude needs user input
 
 input=$(cat)
-notification_type=$(echo "$input" | python3 -c "import sys,json; print(json.load(sys.stdin).get('notification_type',''))" 2>/dev/null)
+eval "$(echo "$input" | python3 -c "
+import sys, json, os
+d = json.load(sys.stdin)
+print(f'notification_type={d.get(\"notification_type\", \"\")}')
+print(f'cwd={d.get(\"cwd\", \"\")}')
+print(f'session_id={d.get(\"session_id\", \"\")}')
+" 2>/dev/null)"
+
+project=$(basename "$cwd")
 
 case "$notification_type" in
   permission_prompt)
@@ -20,4 +28,11 @@ case "$notification_type" in
     ;;
 esac
 
-osascript -e "display notification \"$msg\" with title \"Claude Code\" sound name \"Glass\""
+icon="$(dirname "$0")/claude-icon.png"
+
+terminal-notifier \
+  -title "Claude Code" \
+  -subtitle "$project" \
+  -message "$msg" \
+  -contentImage "$icon" \
+  -sound Glass
