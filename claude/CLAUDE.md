@@ -27,5 +27,9 @@ All servers use browser OAuth (except qmd — no auth needed). Authenticate each
 ## Linear Projects
 - **Context Engine**: `b52b3db4-2e01-460b-bcca-61c6ca27d7ab` (DAT team)
 
+## Communication
+
+Default to concise, answer-first responses — see the `concise-comms` skill for the full guidance. Lead with the answer, cut preamble/postamble and filler, and match length to the task. Keep warmth, correct grammar, and reasoning that adds value: concise, not caveman. When I ask you to explain or go deep, depth becomes the task — be thorough.
+
 ## Preferences
 <!-- Add preferences here as you discover them -->
